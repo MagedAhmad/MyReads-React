@@ -6,14 +6,24 @@ import ListBooks from './ListBooks'
 class SearchBooks extends Component {
     state = {
         query: '',
-        books: []
+        books: [],
+        error: false
     }
 
     search = (event) => {
         if(event.target.value) {
-            BooksAPI.search(event.target.value).then((resp) => {
-                (resp.length > 0) ? this.setState({books: resp}) : this.setState({books : []})
+            BooksAPI.search(event.target.value.trim()).then((resp) => {
+                if(resp.length > 0) { 
+                    this.setState({error : false})
+                    this.setState({books: resp})
+                }else {
+                    this.setState({error : true})
+                    this.setState({books : []})
+                }
             })
+        }else {
+            this.setState({error : true})
+            this.setState({books : []})
         }
     }
 
@@ -32,6 +42,9 @@ class SearchBooks extends Component {
             <div className="search-books-results">
               <ol className="books-grid">
                   <ListBooks books={this.state.books} changeShelf={changeShelf}/>
+                  {(this.state.error) ? (
+                  <p>No search results</p>
+                  ) : ''}
               </ol>
             </div>
           </div>

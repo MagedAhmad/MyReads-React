@@ -11,7 +11,7 @@ class ListBooks extends Component {
                         <Book book={book} changeShelf={changeShelf} />
                     </li>
                 ))}
-        </ol>
+            </ol>
         )
     }
 }
