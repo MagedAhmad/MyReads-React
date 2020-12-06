@@ -10,16 +10,15 @@ class SearchBooks extends Component {
     }
 
     search = (event) => {
-        BooksAPI.search(event.target.value).then((resp) => {
-            if(resp.error) {
-                this.setState({books: []})
-            }else {
-                this.setState({books: resp})
-            }
-        })
+        if(event.target.value) {
+            BooksAPI.search(event.target.value).then((resp) => {
+                (resp.length > 0) ? this.setState({books: resp}) : this.setState({books : []})
+            })
+        }
     }
 
     render() {
+        const { books, changeShelf} = this.props
         return (
             <div className="search-books">
             <div className="search-books-bar">
@@ -32,7 +31,7 @@ class SearchBooks extends Component {
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
-                  <ListBooks books={this.state.books} />
+                  <ListBooks books={this.state.books} changeShelf={changeShelf}/>
               </ol>
             </div>
           </div>
