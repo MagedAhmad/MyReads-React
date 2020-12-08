@@ -1,7 +1,7 @@
 import React, { Component } from 'react' 
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
-import ListBooks from './ListBooks'
+import ShelfChanger from './ShelfChanger'
 
 class SearchBooks extends Component {
     state = {
@@ -26,9 +26,10 @@ class SearchBooks extends Component {
             this.setState({books : []})
         }
     }
-
+    
     render() {
-        const { changeShelf} = this.props
+        const { books, changeShelf} = this.props
+
         return (
             <div className="search-books">
             <div className="search-books-bar">
@@ -41,10 +42,32 @@ class SearchBooks extends Component {
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
-                  <ListBooks books={this.state.books} changeShelf={changeShelf}/>
-                  {(this.state.error) ? (
-                  <p>No search results</p>
-                  ) : ''}
+                {this.state.books.map( book => {
+                    let defaultShelf = 'none'
+                    books.forEach(matchedBook  => {
+                        if (book.id === matchedBook.id) {
+                            defaultShelf = matchedBook.shelf
+                        } else {
+                            book.shelf = "none"
+                        }
+                    })
+
+                    return (
+                        <li key={book.id}>
+                            <h1>{defaultShelf} </h1>
+                            <div className="book">
+                                <div className="book-top">
+                                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url('${book.imageLinks ? book.imageLinks.thumbnail : ''}')` }}></div>
+                                    <ShelfChanger book={book} changeShelf={changeShelf} defaultShelf={defaultShelf} />
+                                </div>
+                                <div className="book-title">{ book.title }</div>
+                                <div className="book-authors">{ (book.authors) ? book.authors.map(author => author) : '' }</div>
+                            </div>
+                        </li>
+                )})}
+                {(this.state.error) ? (
+                    <p>No search results</p>
+                ) : ''}
               </ol>
             </div>
           </div>
